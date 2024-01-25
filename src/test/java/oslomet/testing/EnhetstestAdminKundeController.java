@@ -87,13 +87,12 @@ public class EnhetstestAdminKundeController {
 
         List<Kunde> resultat = adminKundeController.hentAlle();
 
-        // Asserting that the result is null
         assertNull(resultat);
     }
 
 
     @Test
-    public void test_registrerOK(){
+    public void test_LagreOK(){
         Kunde enKunde = new Kunde("01010110523",
                 "Lene", "Jensen", "Askerveien 22", "3270",
                 "Asker", "22224444", "HeiHei");
@@ -158,7 +157,7 @@ public class EnhetstestAdminKundeController {
 
         String resultat = adminKundeController.endre(enKunde);
 
-        assertNull(null);
+        assertNull(resultat);
 
     }
 
