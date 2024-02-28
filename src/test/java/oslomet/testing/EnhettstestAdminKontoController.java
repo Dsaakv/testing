@@ -155,4 +155,92 @@ public class EnhettstestAdminKontoController {
         assertEquals(null, resultat);
     }
 
+    @Test
+    public void endre_ok(){
+
+        Transaksjon transaksjon1 = new Transaksjon(1, "123456789", 500.0, "2024-02-27", "Deposit", "No", "01010110523");
+
+        Konto konto1 = new Konto("01010110523", "123456789", 1000.0, "Savings", "NOK", List.of(transaksjon1));
+
+        when(sjekk.loggetInn()).thenReturn("Logget inn");
+
+        when(adminRepository.endreKonto(any(Konto.class))).thenReturn("OK");
+
+        String resultat = adminKontoController.registrerKonto(konto1);
+
+        assertEquals("OK", resultat);
+
+    }
+
+    @Test
+    public void endre_feil(){
+        Transaksjon transaksjon1 = new Transaksjon(1, "123456789", 500.0, "2024-02-27", "Deposit", "No", "01010110523");
+
+        Konto konto1 = new Konto("01010110523", "123456789", 1000.0, "Savings", "NOK", List.of(transaksjon1));
+
+        when(sjekk.loggetInn()).thenReturn("Logget inn");
+
+        when(adminRepository.endreKonto(any(Konto.class))).thenReturn(null);
+
+        String resultat = adminKontoController.registrerKonto(konto1);
+
+        assertEquals(null, resultat);
+    }
+
+    @Test
+    public void endre_logginnfeil(){
+        Transaksjon transaksjon1 = new Transaksjon(1, "123456789", 500.0, "2024-02-27", "Deposit", "No", "01010110523");
+
+        Konto konto1 = new Konto("01010110523", "123456789", 1000.0, "Savings", "NOK", List.of(transaksjon1));
+
+        when(sjekk.loggetInn()).thenReturn(null);
+
+        when(adminRepository.endreKonto(any(Konto.class))).thenReturn(null);
+
+        String resultat = adminKontoController.registrerKonto(konto1);
+
+        assertEquals("Ikke innlogget", resultat);
+    }
+
+    @Test
+    public void slett_ok(){
+
+        String kontonummer = "123456789";
+
+        when(sjekk.loggetInn()).thenReturn("Logget inn");
+
+        when(adminRepository.slettKonto(anyString())).thenReturn("OK");
+
+        String resultat = adminKontoController.slettKonto(kontonummer);
+
+        assertEquals("OK", resultat);
+    }
+
+    @Test
+    public void slett_feil(){
+
+        String kontonummer = "123456789";
+
+        when(sjekk.loggetInn()).thenReturn("Logget inn");
+
+        when(adminRepository.slettKonto(anyString())).thenReturn(null);
+
+        String resultat = adminKontoController.slettKonto(kontonummer);
+
+        assertEquals(null, resultat);
+    }
+
+    @Test
+    public void slett_ikkeloggetinn(){
+
+        String kontonummer = "123456789";
+
+        when(sjekk.loggetInn()).thenReturn(null);
+
+        when(adminRepository.slettKonto(anyString())).thenReturn("OK");
+
+        String resultat = adminKontoController.slettKonto(kontonummer);
+
+        assertEquals("Ikke innlogget", resultat);
+    }
 }
