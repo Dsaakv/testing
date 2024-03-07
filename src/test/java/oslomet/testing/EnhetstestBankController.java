@@ -9,6 +9,7 @@ import oslomet.testing.API.BankController;
 import oslomet.testing.DAL.BankRepository;
 import oslomet.testing.Models.Konto;
 import oslomet.testing.Models.Kunde;
+import oslomet.testing.Models.Transaksjon;
 import oslomet.testing.Sikkerhet.Sikkerhet;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -95,6 +97,36 @@ public class EnhetstestBankController {
 
         // Act
         List<Konto> result = bankController.hentSaldi();
+
+        // Assert
+        assertNull(result);
+    }
+
+    @Test
+    public void registrerBetaling_LoggetInn() {
+        // Arrange
+        String personnummer = "01010110523";
+        Transaksjon betaling = new Transaksjon(); // Set up the Transaksjon object as necessary
+        String expectedResponse = "OK";
+
+        when(sjekk.loggetInn()).thenReturn(personnummer);
+        when(repository.registrerBetaling(any(Transaksjon.class))).thenReturn(expectedResponse);
+
+        // Act
+        String result = bankController.registrerBetaling(betaling);
+
+        // Assert
+        assertEquals(expectedResponse, result);
+    }
+
+    @Test
+    public void registrerBetaling_IkkeLoggetInn() {
+        // Arrange
+        Transaksjon betaling = new Transaksjon(); // Set up the Transaksjon object as necessary
+        when(sjekk.loggetInn()).thenReturn(null);
+
+        // Act
+        String result = bankController.registrerBetaling(betaling);
 
         // Assert
         assertNull(result);
