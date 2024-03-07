@@ -35,6 +35,41 @@ public class EnhetstestBankController {
     private Sikkerhet sjekk;
 
     @Test
+    public void hentTransaksjoner_LoggetInn() {
+        // Arrange
+        String kontoNr = "12345";
+        String fraDato = "2021-01-01";
+        String tilDato = "2021-01-31";
+        String personnummer = "01010110523";
+
+        Konto expectedKonto = new Konto();
+        when(sjekk.loggetInn()).thenReturn(personnummer);
+        when(repository.hentTransaksjoner(kontoNr, fraDato, tilDato)).thenReturn(expectedKonto);
+
+        // Act
+        Konto result = bankController.hentTransaksjoner(kontoNr, fraDato, tilDato);
+
+        // Assert
+        assertEquals(expectedKonto, result);
+    }
+
+    @Test
+    public void hentTransaksjoner_IkkeLoggetInn() {
+        // Arrange
+        String kontoNr = "12345";
+        String fraDato = "2021-01-01";
+        String tilDato = "2021-01-31";
+
+        when(sjekk.loggetInn()).thenReturn(null);
+
+        // Act
+        Konto result = bankController.hentTransaksjoner(kontoNr, fraDato, tilDato);
+
+        // Assert
+        assertNull(result);
+    }
+
+    @Test
     public void hentKundeInfo_loggetInn() {
 
         // arrange
