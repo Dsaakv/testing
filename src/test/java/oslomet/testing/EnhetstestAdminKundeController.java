@@ -174,5 +174,50 @@ public class EnhetstestAdminKundeController {
         assertEquals("Ikke logget inn", resultat);
     }
 
+    @Test
+    public void test_slett_ok(){
+
+        String enKunde = "01010110523";
+
+        when(sjekk.loggetInn()).thenReturn("Logget inn");
+
+        when(adminRepository.slettKunde(anyString())).thenReturn("OK");
+
+        String resultat = adminKundeController.slett(enKunde);
+
+        assertEquals("OK", resultat);
+
+    }
+
+    @Test
+    public void test_slett_feil(){
+
+        String enKunde = "01010110523";
+
+        when(sjekk.loggetInn()).thenReturn("Logget inn");
+
+        when(adminRepository.slettKunde(anyString())).thenReturn(null);
+
+        String resultat = adminKundeController.slett(enKunde);
+
+        assertEquals(null, resultat);
+
+    }
+
+    @Test
+    public void test_slett_ikkeloggetinn(){
+
+        String enKunde = "01010110523";
+
+        when(sjekk.loggetInn()).thenReturn(null);
+
+        when(adminRepository.slettKunde(anyString())).thenReturn("OK");
+
+        String resultat = adminKundeController.slett(enKunde);
+
+        assertEquals("Ikke logget inn", resultat);
+
+    }
+
 
 }
