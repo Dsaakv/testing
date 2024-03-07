@@ -13,6 +13,7 @@ import oslomet.testing.Sikkerhet.Sikkerhet;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -64,6 +65,36 @@ public class EnhetstestBankController {
 
         // Act
         Konto result = bankController.hentTransaksjoner(kontoNr, fraDato, tilDato);
+
+        // Assert
+        assertNull(result);
+    }
+
+    @Test
+    public void hentSaldi_LoggetInn() {
+        // Arrange
+        String personnummer = "01010110523";
+        List<Konto> expectedSaldi = Arrays.asList(
+                new Konto("12345", personnummer, 5000, "Sparekonto", "NOK", null),
+                new Konto("67890", personnummer, 12000, "Brukskonto", "NOK", null)
+        );
+        when(sjekk.loggetInn()).thenReturn(personnummer);
+        when(repository.hentSaldi(anyString())).thenReturn(expectedSaldi);
+
+        // Act
+        List<Konto> result = bankController.hentSaldi();
+
+        // Assert
+        assertEquals(expectedSaldi, result);
+    }
+
+    @Test
+    public void hentSaldi_IkkeLoggetInn() {
+        // Arrange
+        when(sjekk.loggetInn()).thenReturn(null);
+
+        // Act
+        List<Konto> result = bankController.hentSaldi();
 
         // Assert
         assertNull(result);
