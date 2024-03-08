@@ -240,12 +240,14 @@ public class EnhetstestBankController {
         
         when(sjekk.loggetInn()).thenReturn(personnummer);
         when(repository.utforBetaling(txID)).thenReturn("OK");
+        when(repository.hentBetalinger(personnummer)).thenReturn(transaksjoner);
 
         // Act
         List<Transaksjon> result = bankController.utforBetaling(txID);
 
         // Assert
-        assertEquals("OK" result);
+        assertNotNull(result);
+        assertEquals(transaksjoner, result);
     }
 
     @Test
