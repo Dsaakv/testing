@@ -198,5 +198,117 @@ public class EnhetstestBankController {
         // assert
         assertNull(resultat);
     }
+
+
+    @Test
+    public void testHentBetalingerWhenPersonnummerNotNull() {
+        // Arrange
+        String personnummer = "123456789";
+        List<Transaksjon> transaksjoner = new ArrayList<>();
+        transaksjoner.add(new Transaksjon(/* Construct Transaksjon object as needed */));
+        
+        Mockito.when(sjekk.loggetInn()).thenReturn(personnummer);
+        Mockito.when(repository.hentBetalinger(personnummer)).thenReturn(transaksjoner);
+
+        // Act
+        List<Transaksjon> result = bankController.hentBetalinger();
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(transaksjoner, result);
+    }
+
+    @Test
+    public void testHentBetalingerWhenPersonnummerNull() {
+        // Arrange
+        Mockito.when(sjekk.loggetInn()).thenReturn(null);
+
+        // Act
+        List<Transaksjon> result = bankController.hentBetalinger();
+
+        // Assert
+        assertNull(result);
+    }
+
+     @Test
+    public void testUtforBetalingWhenLoggedInAndRepositoryReturnsOK() {
+        // Arrange
+        String personnummer = "123456789";
+        int txID = 123;
+        List<Transaksjon> transaksjoner = new ArrayList<>();
+        transaksjoner.add(new Transaksjon(/* Construct Transaksjon object as needed */));
+        
+        when(sjekk.loggetInn()).thenReturn(personnummer);
+        when(repository.utforBetaling(txID)).thenReturn("OK");
+        when(repository.hentBetalinger(personnummer)).thenReturn(transaksjoner);
+
+        // Act
+        List<Transaksjon> result = bankController.utforBetaling(txID);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(transaksjoner, result);
+    }
+
+    @Test
+    public void testUtforBetalingIkkeLoggetInn() {
+        // Arrange
+        when(sjekk.loggetInn()).thenReturn(null);
+
+        // Act
+        List<Transaksjon> result = bankController.utforBetaling(123);
+
+        // Assert
+        assertNull(result);
+        verify(repository, never()).utforBetaling(anyInt());
+    }
+
+    @Test
+    public void testUtforBetalingWhenRepositoryReturnsNotOK() {
+        // Arrange
+        String personnummer = "123456789";
+        int txID = 123;
+        
+        when(sjekk.loggetInn()).thenReturn(personnummer);
+        when(repository.utforBetaling(txID)).thenReturn("ERROR");
+
+        // Act
+        List<Transaksjon> result = bankController.utforBetaling(txID);
+
+        // Assert
+        assertNull(result);
+        verify(repository, never()).hentBetalinger(anyString());
+    }
+
+    @Test
+    public void testEndreKundeInfoLoggetInn() {
+        // Arrange
+        String personnummer = "123456789";
+        Kunde innKunde = new Kunde();
+        innKunde.setPersonnummer("987654321"); // random personnummer for testing
+        
+        when(sjekk.loggetInn()).thenReturn(personnummer);
+        when(repository.endreKundeInfo(innKunde)).thenReturn("SUCCESS");
+
+        // Act
+        String result = bankController.endre(innKunde);
+
+        // Assert
+        assertEquals("SUCCESS", result);
+        assertEquals(personnummer, innKunde.getPersonnummer());
+    }
+
+    @Test
+    public void testEndreKundeInfoWhenIkkeLoggetInn() {
+        // Arrange
+        when(sjekk.loggetInn()).thenReturn(null);
+
+        // Act
+        String result = bankController.endre(new Kunde());
+
+        // Assert
+        assertNull(result);
+        verify(repository, never()).endreKundeInfo(any());
+    }
 }
 
