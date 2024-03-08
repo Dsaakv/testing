@@ -207,8 +207,8 @@ public class EnhetstestBankController {
         List<Transaksjon> transaksjoner = new ArrayList<>();
         transaksjoner.add(new Transaksjon(/* Construct Transaksjon object as needed */));
         
-        Mockito.when(sjekk.loggetInn()).thenReturn(personnummer);
-        Mockito.when(repository.hentBetalinger(personnummer)).thenReturn(transaksjoner);
+        when(sjekk.loggetInn()).thenReturn(personnummer);
+        when(repository.hentBetalinger(personnummer)).thenReturn(transaksjoner);
 
         // Act
         List<Transaksjon> result = bankController.hentBetalinger();
@@ -221,7 +221,7 @@ public class EnhetstestBankController {
     @Test
     public void testHentBetalingerWhenPersonnummerNull() {
         // Arrange
-        Mockito.when(sjekk.loggetInn()).thenReturn(null);
+        when(sjekk.loggetInn()).thenReturn(null);
 
         // Act
         List<Transaksjon> result = bankController.hentBetalinger();
