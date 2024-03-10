@@ -107,7 +107,7 @@ public class EnhetstestBankController {
     public void registrerBetaling_LoggetInn() {
         // Arrange
         String personnummer = "01010110523";
-        Transaksjon betaling = new Transaksjon(); // Set up the Transaksjon object as necessary
+        Transaksjon betaling = new Transaksjon();
         String expectedResponse = "OK";
 
         when(sjekk.loggetInn()).thenReturn(personnummer);
@@ -123,7 +123,7 @@ public class EnhetstestBankController {
     @Test
     public void registrerBetaling_IkkeLoggetInn() {
         // Arrange
-        Transaksjon betaling = new Transaksjon(); // Set up the Transaksjon object as necessary
+        Transaksjon betaling = new Transaksjon();
         when(sjekk.loggetInn()).thenReturn(null);
 
         // Act
