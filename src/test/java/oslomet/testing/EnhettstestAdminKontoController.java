@@ -43,13 +43,13 @@ public class EnhettstestAdminKontoController {
     private Sikkerhet sjekk;
 
     @Test
-    public void registrerKunde_ok(){
+    public void registrerKonto_ok(){
 
-        Konto enKonto = new Konto("01010110523", "105010123456", 720.0, "Lønnskonto", "NOK", new ArrayList<>());
+        Konto enKonto = new Konto("01010110523", "105010123456", 720.0, "Lønnskonto", "NOK", null);
 
-        when(sjekk.loggetInn()).thenReturn("Logget inn");
+        when(sjekk.loggetInn()).thenReturn("Admin");
 
-        when(adminRepository.registrerKunde(any(Kunde.class))).thenReturn("OK");
+        when(adminRepository.registrerKonto(any(Konto.class))).thenReturn("OK");
 
         String resultat = adminKontoController.registrerKonto(enKonto);
 
@@ -59,15 +59,15 @@ public class EnhettstestAdminKontoController {
     @Test
     public void registrerKunde_feil(){
 
-        Konto enKonto = new Konto("01010110523", "105010123456", 720.0, "Lønnskonto", "NOK", new ArrayList<>());
+        Konto enKonto = new Konto("01010110523", "105010123456", 720.0, "Lønnskonto", "NOK", null);
 
-        when(sjekk.loggetInn()).thenReturn("Logget inn");
+        when(sjekk.loggetInn()).thenReturn("Admin");
 
-        when(adminRepository.registrerKunde(any(Kunde.class))).thenReturn(null);
+        when(adminRepository.registrerKonto(any(Konto.class))).thenReturn(null);
 
         String resultat = adminKontoController.registrerKonto(enKonto);
 
-        assertEquals(null, resultat);
+        assertNull(resultat);
     }
 
     @Test
@@ -77,7 +77,6 @@ public class EnhettstestAdminKontoController {
 
         when(sjekk.loggetInn()).thenReturn(null);
 
-        when(adminRepository.registrerKunde(any(Kunde.class))).thenReturn("OK");
 
         String resultat = adminKontoController.registrerKonto(enKonto);
 
@@ -88,18 +87,18 @@ public class EnhettstestAdminKontoController {
     public void hentalle_ok() {
 
 
-        Transaksjon transaksjon1 = new Transaksjon(1, "123456789", 500.0, "2024-02-27", "Deposit", "No", "01010110523");
-        Transaksjon transaksjon2 = new Transaksjon(2, "987654321", 200.0, "2024-02-28", "Withdrawal", "Yes", "02020220876");
-
-        Konto konto1 = new Konto("01010110523", "123456789", 1000.0, "Savings", "NOK", List.of(transaksjon1));
-        Konto konto2 = new Konto("02020220876", "987654321", 500.0, "Checking", "USD", List.of(transaksjon2));
-
-
         List<Konto> kontoliste = new ArrayList<>();
+
+        Konto konto1 = new Konto("12345678901", "10108976011", 800.0, "Brukskonto", "NOK", null);
+        Konto konto2 = new Konto("12345678901", "10119085922", 4000.0, "Regningskonto", "NOK", null);
+        Konto konto3 = new Konto("12345678901", "10110344455", 150000.0, "Sparekonto", "NOK", null);
+
         kontoliste.add(konto1);
         kontoliste.add(konto2);
+        kontoliste.add(konto3);
 
-        when(sjekk.loggetInn()).thenReturn("Logget inn");
+
+        when(sjekk.loggetInn()).thenReturn("Admin");
 
         when(adminRepository.hentAlleKonti()).thenReturn(kontoliste);
 
@@ -111,93 +110,64 @@ public class EnhettstestAdminKontoController {
     @Test
     public void hentalle_feil(){
 
-        Transaksjon transaksjon1 = new Transaksjon(1, "123456789", 500.0, "2024-02-27", "Deposit", "No", "01010110523");
-        Transaksjon transaksjon2 = new Transaksjon(2, "987654321", 200.0, "2024-02-28", "Withdrawal", "Yes", "02020220876");
-
-        Konto konto1 = new Konto("01010110523", "123456789", 1000.0, "Savings", "NOK", List.of(transaksjon1));
-        Konto konto2 = new Konto("02020220876", "987654321", 500.0, "Checking", "USD", List.of(transaksjon2));
-
-
-        List<Konto> kontoliste = new ArrayList<>();
-        kontoliste.add(konto1);
-        kontoliste.add(konto2);
-
-        when(sjekk.loggetInn()).thenReturn("Logget inn");
+        when(sjekk.loggetInn()).thenReturn("Admin");
 
         when(adminRepository.hentAlleKonti()).thenReturn(null);
 
         List<Konto> resultat = adminKontoController.hentAlleKonti();
 
-        assertEquals(null, resultat);
+        assertNull(resultat);
     }
 
     @Test
     public void hentalle_ikkeloggetinn() {
 
 
-        Transaksjon transaksjon1 = new Transaksjon(1, "123456789", 500.0, "2024-02-27", "Deposit", "No", "01010110523");
-        Transaksjon transaksjon2 = new Transaksjon(2, "987654321", 200.0, "2024-02-28", "Withdrawal", "Yes", "02020220876");
-
-        Konto konto1 = new Konto("01010110523", "123456789", 1000.0, "Savings", "NOK", List.of(transaksjon1));
-        Konto konto2 = new Konto("02020220876", "987654321", 500.0, "Checking", "USD", List.of(transaksjon2));
-
-
-        List<Konto> kontoliste = new ArrayList<>();
-        kontoliste.add(konto1);
-        kontoliste.add(konto2);
 
         when(sjekk.loggetInn()).thenReturn(null);
 
-        when(adminRepository.hentAlleKonti()).thenReturn(kontoliste);
 
         List<Konto> resultat = adminKontoController.hentAlleKonti();
 
-        assertEquals(null, resultat);
+        assertNull(resultat);
     }
 
     @Test
     public void endre_ok(){
 
-        Transaksjon transaksjon1 = new Transaksjon(1, "123456789", 500.0, "2024-02-27", "Deposit", "No", "01010110523");
+        Konto konto2 = new Konto("12345678901", "10219085822", 13000.0, "sparekonto", "NOK", null);
 
-        Konto konto1 = new Konto("01010110523", "123456789", 1000.0, "Savings", "NOK", List.of(transaksjon1));
 
-        when(sjekk.loggetInn()).thenReturn("Logget inn");
+        when(sjekk.loggetInn()).thenReturn("Admin");
 
         when(adminRepository.endreKonto(any(Konto.class))).thenReturn("OK");
 
-        String resultat = adminKontoController.registrerKonto(konto1);
+        String resultat = adminKontoController.endreKonto(konto2);
 
         assertEquals("OK", resultat);
-
     }
 
     @Test
     public void endre_feil(){
-        Transaksjon transaksjon1 = new Transaksjon(1, "123456789", 500.0, "2024-02-27", "Deposit", "No", "01010110523");
 
-        Konto konto1 = new Konto("01010110523", "123456789", 1000.0, "Savings", "NOK", List.of(transaksjon1));
+        Konto konto2 = new Konto("12345678901", "10219085822", 13000.0, "sparekonto", "NOK", null);
 
-        when(sjekk.loggetInn()).thenReturn("Logget inn");
+        when(sjekk.loggetInn()).thenReturn("Admin");
 
-        when(adminRepository.endreKonto(any(Konto.class))).thenReturn(null);
 
-        String resultat = adminKontoController.registrerKonto(konto1);
+        String resultat = adminKontoController.endreKonto(konto2);
 
-        assertEquals(null, resultat);
+        assertNull(resultat);
     }
 
     @Test
     public void endre_logginnfeil(){
-        Transaksjon transaksjon1 = new Transaksjon(1, "123456789", 500.0, "2024-02-27", "Deposit", "No", "01010110523");
 
-        Konto konto1 = new Konto("01010110523", "123456789", 1000.0, "Savings", "NOK", List.of(transaksjon1));
+        Konto konto2 = new Konto("12345678901", "10219085822", 13000.0, "sparekonto", "NOK", null);
 
         when(sjekk.loggetInn()).thenReturn(null);
 
-        when(adminRepository.endreKonto(any(Konto.class))).thenReturn(null);
-
-        String resultat = adminKontoController.registrerKonto(konto1);
+        String resultat = adminKontoController.registrerKonto(konto2);
 
         assertEquals("Ikke innlogget", resultat);
     }
@@ -205,13 +175,12 @@ public class EnhettstestAdminKontoController {
     @Test
     public void slett_ok(){
 
-        String kontonummer = "123456789";
 
-        when(sjekk.loggetInn()).thenReturn("Logget inn");
+        when(sjekk.loggetInn()).thenReturn("Admin");
 
-        when(adminRepository.slettKonto(anyString())).thenReturn("OK");
+        when(adminRepository.slettKonto(any(String.class))).thenReturn("OK");
 
-        String resultat = adminKontoController.slettKonto(kontonummer);
+        String resultat = adminKontoController.slettKonto("12345678901");
 
         assertEquals("OK", resultat);
     }
@@ -219,27 +188,21 @@ public class EnhettstestAdminKontoController {
     @Test
     public void slett_feil(){
 
-        String kontonummer = "123456789";
+        when(sjekk.loggetInn()).thenReturn("Admin");
 
-        when(sjekk.loggetInn()).thenReturn("Logget inn");
+        when(adminRepository.slettKonto(any(String.class))).thenReturn(null);
 
-        when(adminRepository.slettKonto(anyString())).thenReturn(null);
+        String resultat = adminKontoController.slettKonto("12345678901");
 
-        String resultat = adminKontoController.slettKonto(kontonummer);
-
-        assertEquals(null, resultat);
+        assertNull(resultat);
     }
 
     @Test
     public void slett_ikkeloggetinn(){
 
-        String kontonummer = "123456789";
-
         when(sjekk.loggetInn()).thenReturn(null);
 
-        when(adminRepository.slettKonto(anyString())).thenReturn("OK");
-
-        String resultat = adminKontoController.slettKonto(kontonummer);
+        String resultat = adminKontoController.slettKonto("12345678901");
 
         assertEquals("Ikke innlogget", resultat);
     }

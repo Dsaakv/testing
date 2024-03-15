@@ -77,6 +77,27 @@ public class EnhetstestSikkerhet {
     }
 
     @Test
+    public void LogginnAdmin_OK(){
+        session.setAttribute("Innlogget","Admin");
+
+        String resultat = sikkerhet.loggInnAdmin("Admin","Admin");
+
+        assertEquals("Logget inn", resultat);
+    }
+
+    @Test
+    public void LogginnAdmin_feil(){
+        session.setAttribute("Innlogget",null);
+
+        String resultatbrukernavn = sikkerhet.loggInnAdmin("Admen","Admin");
+        String resultatpassord = sikkerhet.loggInnAdmin("Admin","Admen");
+
+        assertEquals("Ikke logget inn", resultatbrukernavn);
+        assertEquals("Ikke logget inn", resultatpassord);
+
+    }
+
+    @Test
     public void testLoggUt() {
         // Act
         sikkerhet.loggUt();

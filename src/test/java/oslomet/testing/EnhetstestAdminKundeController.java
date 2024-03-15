@@ -52,7 +52,7 @@ public class EnhetstestAdminKundeController {
         kundeliste.add(enKunde);
         kundeliste.add(toKunde);
 
-        when(sjekk.loggetInn()).thenReturn("Logget inn");
+        when(sjekk.loggetInn()).thenReturn("Admin");
         when(adminRepository.hentAlleKunder()).thenReturn(kundeliste);
 
         List<Kunde> resultat = adminKundeController.hentAlle();
@@ -72,17 +72,8 @@ public class EnhetstestAdminKundeController {
 
     @Test
     public void test_hentAllefeil(){
-        Kunde enKunde = new Kunde("01010110523",
-                "Lene", "Jensen", "Askerveien 22", "3270",
-                "Asker", "22224444", "HeiHei");
-        Kunde toKunde = new Kunde("01010110524",
-                "Jane", "Jensen", "Askerveien 22", "3270",
-                "Asker", "22224444", "HeiHei");
 
-        List<Kunde> kundeliste = new ArrayList<>();
-
-
-        when(sjekk.loggetInn()).thenReturn("Logget inn");
+        when(sjekk.loggetInn()).thenReturn("Admin");
         when(adminRepository.hentAlleKunder()).thenReturn(null);
 
         List<Kunde> resultat = adminKundeController.hentAlle();
@@ -97,8 +88,8 @@ public class EnhetstestAdminKundeController {
                 "Lene", "Jensen", "Askerveien 22", "3270",
                 "Asker", "22224444", "HeiHei");
 
-        when(sjekk.loggetInn()).thenReturn("Logget inn");
-        when(adminRepository.registrerKunde((any(Kunde.class)))).thenReturn("OK");
+        when(sjekk.loggetInn()).thenReturn("Admin");
+        when(adminRepository.registrerKunde(any(Kunde.class))).thenReturn("OK");
 
         String resultat = adminKundeController.lagreKunde(enKunde);
 
@@ -125,8 +116,8 @@ public class EnhetstestAdminKundeController {
                 "Lene", "Jensen", "Askerveien 22", "3270",
                 "Asker", "22224444", "HeiHei");
 
-        when(sjekk.loggetInn()).thenReturn("Logget inn");
-        when(adminRepository.registrerKunde((any(Kunde.class)))).thenReturn("Feil");
+        when(sjekk.loggetInn()).thenReturn("Admin");
+        when(adminRepository.registrerKunde(any(Kunde.class))).thenReturn(null);
 
         String resultat = adminKundeController.lagreKunde((enKunde));
 
@@ -139,7 +130,7 @@ public class EnhetstestAdminKundeController {
         Kunde enKunde = new Kunde("01010110523",
                 "Lene", "Jensen", "Askerveien 22", "3270",
                 "Asker", "22224444", "HeiHei");
-        when(sjekk.loggetInn()).thenReturn("Logget inn");
+        when(sjekk.loggetInn()).thenReturn("Admin");
         when(adminRepository.endreKundeInfo(any(Kunde.class))).thenReturn("OK");
 
         String resultat = adminKundeController.endre(enKunde);
@@ -177,13 +168,15 @@ public class EnhetstestAdminKundeController {
     @Test
     public void test_slett_ok(){
 
-        String enKunde = "01010110523";
+        Kunde enKunde = new Kunde("01010110523",
+                "Lene", "Jensen", "Askerveien 22", "3270",
+                "Asker", "22224444", "HeiHei");
 
-        when(sjekk.loggetInn()).thenReturn("Logget inn");
+        when(sjekk.loggetInn()).thenReturn("Admin");
 
         when(adminRepository.slettKunde(anyString())).thenReturn("OK");
 
-        String resultat = adminKundeController.slett(enKunde);
+        String resultat = adminKundeController.slett("01010110523");
 
         assertEquals("OK", resultat);
 
@@ -192,13 +185,15 @@ public class EnhetstestAdminKundeController {
     @Test
     public void test_slett_feil(){
 
-        String enKunde = "01010110523";
+        Kunde enKunde = new Kunde("01010110523",
+                "Lene", "Jensen", "Askerveien 22", "3270",
+                "Asker", "22224444", "HeiHei");
 
         when(sjekk.loggetInn()).thenReturn("Logget inn");
 
         when(adminRepository.slettKunde(anyString())).thenReturn(null);
 
-        String resultat = adminKundeController.slett(enKunde);
+        String resultat = adminKundeController.slett("01010110523");
 
         assertEquals(null, resultat);
 
@@ -207,13 +202,15 @@ public class EnhetstestAdminKundeController {
     @Test
     public void test_slett_ikkeloggetinn(){
 
-        String enKunde = "01010110523";
+        Kunde enKunde = new Kunde("01010110523",
+                "Lene", "Jensen", "Askerveien 22", "3270",
+                "Asker", "22224444", "HeiHei");
 
         when(sjekk.loggetInn()).thenReturn(null);
 
         when(adminRepository.slettKunde(anyString())).thenReturn("OK");
 
-        String resultat = adminKundeController.slett(enKunde);
+        String resultat = adminKundeController.slett("01010110523");
 
         assertEquals("Ikke logget inn", resultat);
 
